@@ -1,44 +1,8 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
-/******/ 	var __webpack_modules__ = ({
-
-/***/ 3:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.insertAnnotationCommandHandler = exports.Annotation = void 0;
-const vscode = __webpack_require__(1);
-const meta_1 = __webpack_require__(292);
-const config_1 = __webpack_require__(4);
-class Annotation {
-    insert() {
-        const activeTextEditor = vscode.window.activeTextEditor;
-        if (!activeTextEditor) {
-            return;
-        }
-        const { document, selection } = activeTextEditor;
-        console.log(selection);
-        activeTextEditor.edit(editBuilder => {
-            const selectionPosition = selection.active;
-            const endCharacter = document.lineAt(selectionPosition).range.end.character;
-            editBuilder.insert(new vscode.Position(selectionPosition.line, endCharacter), config_1.default.annotationConfig.content);
-        });
-    }
-}
-exports.Annotation = Annotation;
-const annotation = new Annotation();
-const insertAnnotationCommandHandler = () => {
-    return vscode.commands.registerCommand(meta_1.default.COMMANDS.insertAnnotation, () => {
-        annotation.insert();
-    });
-};
-exports.insertAnnotationCommandHandler = insertAnnotationCommandHandler;
-
-
-/***/ }),
-
-/***/ 290:
+/******/ 	var __webpack_modules__ = ([
+/* 0 */,
+/* 1 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -53,12 +17,11 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-__exportStar(__webpack_require__(291), exports);
+__exportStar(__webpack_require__(2), exports);
 
 
 /***/ }),
-
-/***/ 291:
+/* 2 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -73,9 +36,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.manualInitCommandHandler = void 0;
-const vscode = __webpack_require__(1);
-const Config_1 = __webpack_require__(2);
-const meta_1 = __webpack_require__(292);
+const vscode = __webpack_require__(3);
+const Config_1 = __webpack_require__(4);
+const meta_1 = __webpack_require__(5);
 class InitPath {
     manualInit() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -117,13 +80,18 @@ exports.manualInitCommandHandler = manualInitCommandHandler;
 
 
 /***/ }),
+/* 3 */
+/***/ ((module) => {
 
-/***/ 2:
+module.exports = require("vscode");;
+
+/***/ }),
+/* 4 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const vscode = __webpack_require__(1);
+const vscode = __webpack_require__(3);
 const I18N_PATHS_KEY = 'i18nPaths';
 class Config {
     static get extensionName() {
@@ -153,22 +121,7 @@ exports.default = Config;
 
 
 /***/ }),
-
-/***/ 4:
-/***/ ((__unused_webpack_module, exports) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.default = {
-    annotationConfig: {
-        content: ' // (need I18N)'
-    }
-};
-
-
-/***/ }),
-
-/***/ 292:
+/* 5 */
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -177,21 +130,127 @@ exports.default = {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     COMMANDS: {
         manualInitPath: "i18n-plugin.manualInitPath",
-        insertAnnotation: "i18n-plugin.insertAnnotation"
+        insertAnnotation: "i18n-plugin.insertAnnotation",
+        insertXMLAnnotation: "i18n-plugin.insertXMLAnnotation",
+        analyse: "i18n-plugin.analyse",
     }
 };
 
 
 /***/ }),
+/* 6 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-/***/ 1:
-/***/ ((module) => {
 
-module.exports = require("vscode");;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.analyseCommandHandler = exports.insertXMLAnnotationCommandHandler = exports.insertAnnotationCommandHandler = exports.Annotation = void 0;
+const vscode = __webpack_require__(3);
+const meta_1 = __webpack_require__(5);
+const config_1 = __webpack_require__(7);
+class Annotation {
+    constructor() {
+        this.isAnalyse = false;
+        this.decorationType = vscode.window.createTextEditorDecorationType({
+            backgroundColor: '#FF8C00',
+            color: '#fff'
+        });
+    }
+    insert() {
+        const activeTextEditor = vscode.window.activeTextEditor;
+        if (!activeTextEditor) {
+            return;
+        }
+        const { document, selection } = activeTextEditor;
+        activeTextEditor.edit(editBuilder => {
+            const selectionPosition = selection.active;
+            const endCharacter = document.lineAt(selectionPosition).range.end.character;
+            editBuilder.insert(new vscode.Position(selectionPosition.line, endCharacter), ` ${config_1.default.annotationConfig.content}`);
+        });
+    }
+    insertXML() {
+        const activeTextEditor = vscode.window.activeTextEditor;
+        if (!activeTextEditor) {
+            return;
+        }
+        const { document, selection } = activeTextEditor;
+        activeTextEditor.edit(editBuilder => {
+            const selectionPosition = selection.active;
+            const line = document.lineAt(selectionPosition);
+            // const startCharacterIndex = line.firstNonWhitespaceCharacterIndex;
+            const endCharacter = line.range.end.character;
+            editBuilder.insert(new vscode.Position(selectionPosition.line, endCharacter), ` ${config_1.default.annotationConfig.xmlContent}`);
+        });
+    }
+    analyse() {
+        const activeTextEditor = vscode.window.activeTextEditor;
+        if (!activeTextEditor) {
+            return;
+        }
+        const { document } = activeTextEditor;
+        const text = document.getText();
+        const reg = /\(need I18N\)/g;
+        if (!this.isAnalyse) {
+            const matches = [];
+            let regexMatch;
+            while ((regexMatch = reg.exec(text)) !== null) {
+                matches.push(regexMatch);
+            }
+            if (matches.length !== 0) {
+                const rangeArray = matches.map(match => {
+                    const startPos = activeTextEditor.document.positionAt(match.index);
+                    const endPos = activeTextEditor.document.positionAt(match.index + match[0].length);
+                    return {
+                        range: new vscode.Range(startPos, endPos),
+                    };
+                });
+                activeTextEditor.setDecorations(this.decorationType, rangeArray);
+            }
+            this.isAnalyse = true;
+        }
+        else {
+            activeTextEditor.setDecorations(this.decorationType, []);
+            this.isAnalyse = false;
+        }
+    }
+}
+exports.Annotation = Annotation;
+const annotation = new Annotation();
+const insertAnnotationCommandHandler = () => {
+    return vscode.commands.registerCommand(meta_1.default.COMMANDS.insertAnnotation, () => {
+        annotation.insert();
+    });
+};
+exports.insertAnnotationCommandHandler = insertAnnotationCommandHandler;
+const insertXMLAnnotationCommandHandler = () => {
+    return vscode.commands.registerCommand(meta_1.default.COMMANDS.insertXMLAnnotation, () => {
+        annotation.insertXML();
+    });
+};
+exports.insertXMLAnnotationCommandHandler = insertXMLAnnotationCommandHandler;
+const analyseCommandHandler = () => {
+    return vscode.commands.registerCommand(meta_1.default.COMMANDS.analyse, () => {
+        annotation.analyse();
+    });
+};
+exports.analyseCommandHandler = analyseCommandHandler;
+
+
+/***/ }),
+/* 7 */
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.default = {
+    annotationConfig: {
+        content: '// (need I18N)',
+        xmlContent: '{/* (need I18N) */}'
+    }
+};
+
 
 /***/ })
-
-/******/ 	});
+/******/ 	]);
 /************************************************************************/
 /******/ 	// The module cache
 /******/ 	var __webpack_module_cache__ = {};
@@ -224,9 +283,9 @@ var exports = __webpack_exports__;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.deactivate = exports.activate = void 0;
-const commands_1 = __webpack_require__(290);
-const Config_1 = __webpack_require__(2);
-const annotation_1 = __webpack_require__(3);
+const commands_1 = __webpack_require__(1);
+const Config_1 = __webpack_require__(4);
+const annotation_1 = __webpack_require__(6);
 Config_1.default.extName = 'i18n-plugin';
 function activate(context) {
     // 激活插件成功
@@ -234,9 +293,13 @@ function activate(context) {
     // 加载模块
     const manualInitCommand = commands_1.manualInitCommandHandler();
     const insertAnnotationCommand = annotation_1.insertAnnotationCommandHandler();
+    const insertXMLAnnotationCommand = annotation_1.insertXMLAnnotationCommandHandler();
+    const analyseCommand = annotation_1.analyseCommandHandler();
     // 往context上注册事件
     context.subscriptions.push(manualInitCommand);
     context.subscriptions.push(insertAnnotationCommand);
+    context.subscriptions.push(insertXMLAnnotationCommand);
+    context.subscriptions.push(analyseCommand);
     // let workspacePath = vscode.workspace.workspaceFolders;
     // // vscode.window.showOpenDialog().then(result => {
     // // 	console.log(result);

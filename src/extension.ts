@@ -3,7 +3,7 @@ import { parse } from '@babel/parser';
 import traverse from '@babel/traverse';
 import { manualInitCommandHandler } from './commands';
 import Config from './config/Config';
-import { insertAnnotationCommandHandler } from './commands/annotation';
+import { analyseCommandHandler, insertAnnotationCommandHandler, insertXMLAnnotationCommandHandler } from './commands/annotation';
 
 Config.extName = 'i18n-plugin';
 
@@ -14,10 +14,13 @@ export function activate(context: vscode.ExtensionContext) {
 	// 加载模块
 	const manualInitCommand = manualInitCommandHandler();
 	const insertAnnotationCommand = insertAnnotationCommandHandler();
+	const insertXMLAnnotationCommand = insertXMLAnnotationCommandHandler();
+	const analyseCommand = analyseCommandHandler();
 	// 往context上注册事件
 	context.subscriptions.push(manualInitCommand);
 	context.subscriptions.push(insertAnnotationCommand);
-
+	context.subscriptions.push(insertXMLAnnotationCommand);
+	context.subscriptions.push(analyseCommand);
 	// let workspacePath = vscode.workspace.workspaceFolders;
 
 	// // vscode.window.showOpenDialog().then(result => {

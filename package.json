@@ -27,11 +27,15 @@
 				"title": "insert-i18N-annotation"
 			},
 			{
+				"command": "i18n-plugin.insertXMLAnnotation",
+				"title": "insert-i18N-xmlannotation"
+			},
+			{
 				"command": "i18n-plugin.i18n-generator",
 				"title": "i18n-generator"
 			},
 			{
-				"command": "i18n-plugin.analyse-i18n",
+				"command": "i18n-plugin.analyse",
 				"title": "analyse-i18n"
 			}
 		],
@@ -43,7 +47,7 @@
 				"when": "editorHasSelection"
 			},
 			{
-				"command": "i18n-plugin.analyse-i18n",
+				"command": "i18n-plugin.analyse",
 				"key": "ctrl+f10",
 				"mac": "cmd+f10",
 				"when": "editorTextFocus"
@@ -52,6 +56,12 @@
 				"command": "i18n-plugin.insertAnnotation",
 				"key": "ctrl+f8",
 				"mac": "ctrl+f8",
+				"when": "editorTextFocus"
+			},
+			{
+				"command": "i18n-plugin.insertXMLAnnotation",
+				"key": "ctrl+shift+f8",
+				"mac": "ctrl+shift+f8",
 				"when": "editorTextFocus"
 			}
 		],
@@ -63,7 +73,7 @@
 				},
 				{
 					"when": "editorTextFocus",
-					"command": "i18n-plugin.analyse-i18n"
+					"command": "i18n-plugin.analyse"
 				},
 				{
 					"when": "editorTextFocus",
