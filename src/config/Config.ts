@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-const I18N_PATHS_KEY = 'i18nPaths';
+export const I18N_PATHS_KEY = 'i18nPaths';
 
 export default class Config {
     static extName: string;

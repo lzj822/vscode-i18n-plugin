@@ -91,8 +91,9 @@ module.exports = require("vscode");;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.I18N_PATHS_KEY = void 0;
 const vscode = __webpack_require__(3);
-const I18N_PATHS_KEY = 'i18nPaths';
+exports.I18N_PATHS_KEY = 'i18nPaths';
 class Config {
     static get extensionName() {
         return this.extName;
@@ -105,7 +106,7 @@ class Config {
     }
     static get i18nPaths() {
         // const rootPath = vscode.workspace.rootPath
-        const path = this.getConfig(I18N_PATHS_KEY);
+        const path = this.getConfig(exports.I18N_PATHS_KEY);
         return path;
         // const relativePaths = paths ? paths.split(',') : []
         // return relativePaths.map((pathItem: string) =>
@@ -114,7 +115,7 @@ class Config {
     }
     static updateI18nPaths(path) {
         console.log(path);
-        this.setConfig(I18N_PATHS_KEY, path);
+        this.setConfig(exports.I18N_PATHS_KEY, path);
     }
 }
 exports.default = Config;
@@ -133,6 +134,7 @@ exports.default = {
         insertAnnotation: "i18n-plugin.insertAnnotation",
         insertXMLAnnotation: "i18n-plugin.insertXMLAnnotation",
         analyse: "i18n-plugin.analyse",
+        generator: "i18n-plugin.generator"
     }
 };
 
@@ -249,6 +251,120 @@ exports.default = {
 };
 
 
+/***/ }),
+/* 8 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.generatorI18nCommandHandler = exports.Generator = void 0;
+const vscode = __webpack_require__(3);
+const Config_1 = __webpack_require__(4);
+const meta_1 = __webpack_require__(5);
+const fs = __webpack_require__(9);
+const Path = __webpack_require__(10);
+class Generator {
+    getFile() {
+        const path = vscode.workspace.getConfiguration(Config_1.default.extensionName).get(Config_1.I18N_PATHS_KEY);
+        if (!path || path === "") {
+            vscode.commands.executeCommand(meta_1.default.COMMANDS.manualInitPath);
+        }
+        else {
+            try {
+                const filePath = Path.parse(path.slice(1));
+                const data = fs.readFileSync(Path.format(filePath), "utf-8");
+                return data;
+            }
+            catch (e) {
+                vscode.window.showErrorMessage("file open error");
+                return null;
+            }
+        }
+    }
+    writeFile(dataObject) {
+        const path = vscode.workspace.getConfiguration(Config_1.default.extensionName).get(Config_1.I18N_PATHS_KEY);
+        if (path) {
+            try {
+                const filePath = Path.parse(path.slice(1));
+                fs.writeFileSync(Path.format(filePath), JSON.stringify(dataObject, null, 4));
+                console.log('123456');
+                vscode.window.showInformationMessage("write file success");
+            }
+            catch (e) {
+                vscode.window.showErrorMessage("write file error");
+            }
+        }
+    }
+    generatorI18n() {
+        let data = this.getFile();
+        let dataObject = {};
+        if (data === null) {
+            return;
+        }
+        else {
+            if (data !== "") {
+                try {
+                    dataObject = JSON.parse(data);
+                }
+                catch (e) {
+                    vscode.window.showErrorMessage("json parse error");
+                }
+            }
+        }
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) {
+            return;
+        }
+        const { selection } = editor;
+        const uri = editor.document.uri;
+        const filePath = uri.path.split('/').slice(-3).reduce((pre, cur) => {
+            if (cur.includes(".tsx")) {
+                return pre + "." + cur.split(".")[0];
+            }
+            return pre + "." + cur.charAt(0).toUpperCase() + cur.slice(1);
+        }, "Admin");
+        if (uri) {
+            vscode.window.showInputBox({
+                value: filePath
+            }).then(value => {
+                if (value) {
+                    const val = `I18N.get({ key: "${value}" })`;
+                    if (dataObject[value]) {
+                        vscode.window.showErrorMessage("I18N key alerady exists");
+                        return;
+                    }
+                    dataObject[value] = editor.document.getText(selection).replace(/(^("|'))|(("|')$)/g, "");
+                    editor.edit(editBuilder => {
+                        editBuilder.replace(selection, val);
+                    });
+                    this.writeFile(dataObject);
+                }
+            });
+        }
+    }
+}
+exports.Generator = Generator;
+const generator = new Generator();
+const generatorI18nCommandHandler = () => {
+    return vscode.commands.registerCommand(meta_1.default.COMMANDS.generator, () => {
+        generator.generatorI18n();
+    });
+};
+exports.generatorI18nCommandHandler = generatorI18nCommandHandler;
+
+
+/***/ }),
+/* 9 */
+/***/ ((module) => {
+
+module.exports = require("fs");;
+
+/***/ }),
+/* 10 */
+/***/ ((module) => {
+
+module.exports = require("path");;
+
 /***/ })
 /******/ 	]);
 /************************************************************************/
@@ -286,6 +402,7 @@ exports.deactivate = exports.activate = void 0;
 const commands_1 = __webpack_require__(1);
 const Config_1 = __webpack_require__(4);
 const annotation_1 = __webpack_require__(6);
+const generator_1 = __webpack_require__(8);
 Config_1.default.extName = 'i18n-plugin';
 function activate(context) {
     // 激活插件成功
@@ -295,11 +412,13 @@ function activate(context) {
     const insertAnnotationCommand = annotation_1.insertAnnotationCommandHandler();
     const insertXMLAnnotationCommand = annotation_1.insertXMLAnnotationCommandHandler();
     const analyseCommand = annotation_1.analyseCommandHandler();
+    const generatorI18nCommand = generator_1.generatorI18nCommandHandler();
     // 往context上注册事件
     context.subscriptions.push(manualInitCommand);
     context.subscriptions.push(insertAnnotationCommand);
     context.subscriptions.push(insertXMLAnnotationCommand);
     context.subscriptions.push(analyseCommand);
+    context.subscriptions.push(generatorI18nCommand);
     // let workspacePath = vscode.workspace.workspaceFolders;
     // // vscode.window.showOpenDialog().then(result => {
     // // 	console.log(result);

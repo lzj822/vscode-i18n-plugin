@@ -5,5 +5,6 @@ export default {
         insertAnnotation: "i18n-plugin.insertAnnotation",
         insertXMLAnnotation: "i18n-plugin.insertXMLAnnotation",
         analyse: "i18n-plugin.analyse",
+        generator: "i18n-plugin.generator"
     }
 };

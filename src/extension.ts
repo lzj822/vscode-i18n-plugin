@@ -4,6 +4,7 @@ import traverse from '@babel/traverse';
 import { manualInitCommandHandler } from './commands';
 import Config from './config/Config';
 import { analyseCommandHandler, insertAnnotationCommandHandler, insertXMLAnnotationCommandHandler } from './commands/annotation';
+import { generatorI18nCommandHandler } from './commands/generator';
 
 Config.extName = 'i18n-plugin';
 
@@ -16,11 +17,13 @@ export function activate(context: vscode.ExtensionContext) {
 	const insertAnnotationCommand = insertAnnotationCommandHandler();
 	const insertXMLAnnotationCommand = insertXMLAnnotationCommandHandler();
 	const analyseCommand = analyseCommandHandler();
+	const generatorI18nCommand = generatorI18nCommandHandler();
 	// 往context上注册事件
 	context.subscriptions.push(manualInitCommand);
 	context.subscriptions.push(insertAnnotationCommand);
 	context.subscriptions.push(insertXMLAnnotationCommand);
 	context.subscriptions.push(analyseCommand);
+	context.subscriptions.push(generatorI18nCommand);
 	// let workspacePath = vscode.workspace.workspaceFolders;
 
 	// // vscode.window.showOpenDialog().then(result => {

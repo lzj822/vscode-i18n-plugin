@@ -31,7 +31,7 @@
 				"title": "insert-i18N-xmlannotation"
 			},
 			{
-				"command": "i18n-plugin.i18n-generator",
+				"command": "i18n-plugin.generator",
 				"title": "i18n-generator"
 			},
 			{
@@ -41,7 +41,7 @@
 		],
 		"keybindings": [
 			{
-				"command": "i18n-plugin.i18n-generator",
+				"command": "i18n-plugin.generator",
 				"key": "ctrl+f9",
 				"mac": "cmd+f9",
 				"when": "editorHasSelection"
@@ -69,7 +69,7 @@
 			"editor/context": [
 				{
 					"when": "editorHasSelection",
-					"command": "i18n-plugin.i18n-generator"
+					"command": "i18n-plugin.generator"
 				},
 				{
 					"when": "editorTextFocus",
