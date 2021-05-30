@@ -1,146 +1,8 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
-/******/ 	var __webpack_modules__ = ([
-/* 0 */,
-/* 1 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/******/ 	var __webpack_modules__ = ({
 
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-__exportStar(__webpack_require__(2), exports);
-
-
-/***/ }),
-/* 2 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.manualInitCommandHandler = void 0;
-const vscode = __webpack_require__(3);
-const Config_1 = __webpack_require__(4);
-const meta_1 = __webpack_require__(5);
-class InitPath {
-    manualInit() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const okText = "立即配置";
-            const result = yield vscode.window.showInformationMessage(`您的I18N配置文件放在那里？`, okText);
-            if (result !== okText) {
-                return;
-            }
-            const filePath = yield this.pickFile();
-            if (!filePath) {
-                vscode.window.showErrorMessage("文件路径地址有误");
-            }
-            else {
-                Config_1.default.updateI18nPaths(filePath);
-                this.success();
-            }
-        });
-    }
-    pickFile() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let file = yield vscode.window.showOpenDialog();
-            if (file && Array.isArray(file)) {
-                return file && file[0].path;
-            }
-            return null;
-        });
-    }
-    success() {
-        vscode.window.showInformationMessage("配置成功");
-    }
-}
-const initPath = new InitPath();
-const manualInitCommandHandler = () => {
-    return vscode.commands.registerCommand(meta_1.default.COMMANDS.manualInitPath, () => {
-        initPath.manualInit();
-    });
-};
-exports.manualInitCommandHandler = manualInitCommandHandler;
-
-
-/***/ }),
-/* 3 */
-/***/ ((module) => {
-
-module.exports = require("vscode");;
-
-/***/ }),
-/* 4 */
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.I18N_PATHS_KEY = void 0;
-const vscode = __webpack_require__(3);
-exports.I18N_PATHS_KEY = 'i18nPaths';
-class Config {
-    static get extensionName() {
-        return this.extName;
-    }
-    static setConfig(key, value, isGlobal = false) {
-        return vscode.workspace.getConfiguration(this.extensionName).update(key, value, isGlobal);
-    }
-    static getConfig(key) {
-        return vscode.workspace.getConfiguration(this.extensionName).get(key);
-    }
-    static get i18nPaths() {
-        // const rootPath = vscode.workspace.rootPath
-        const path = this.getConfig(exports.I18N_PATHS_KEY);
-        return path;
-        // const relativePaths = paths ? paths.split(',') : []
-        // return relativePaths.map((pathItem: string) =>
-        //   path.resolve(rootPath, pathItem)
-        // )
-    }
-    static updateI18nPaths(path) {
-        console.log(path);
-        this.setConfig(exports.I18N_PATHS_KEY, path);
-    }
-}
-exports.default = Config;
-
-
-/***/ }),
-/* 5 */
-/***/ ((__unused_webpack_module, exports) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.default = {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    COMMANDS: {
-        manualInitPath: "i18n-plugin.manualInitPath",
-        insertAnnotation: "i18n-plugin.insertAnnotation",
-        insertXMLAnnotation: "i18n-plugin.insertXMLAnnotation",
-        analyse: "i18n-plugin.analyse",
-        generator: "i18n-plugin.generator"
-    }
-};
-
-
-/***/ }),
-/* 6 */
+/***/ 6:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -148,7 +10,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.analyseCommandHandler = exports.insertXMLAnnotationCommandHandler = exports.insertAnnotationCommandHandler = exports.Annotation = void 0;
 const vscode = __webpack_require__(3);
 const meta_1 = __webpack_require__(5);
-const config_1 = __webpack_require__(7);
+const config_1 = __webpack_require__(295);
 class Annotation {
     constructor() {
         this.isAnalyse = false;
@@ -238,21 +100,8 @@ exports.analyseCommandHandler = analyseCommandHandler;
 
 
 /***/ }),
-/* 7 */
-/***/ ((__unused_webpack_module, exports) => {
 
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.default = {
-    annotationConfig: {
-        content: '// (need I18N)',
-        xmlContent: '{/* (need I18N) */}'
-    }
-};
-
-
-/***/ }),
-/* 8 */
+/***/ 296:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -261,8 +110,8 @@ exports.generatorI18nCommandHandler = exports.Generator = void 0;
 const vscode = __webpack_require__(3);
 const Config_1 = __webpack_require__(4);
 const meta_1 = __webpack_require__(5);
-const fs = __webpack_require__(9);
-const Path = __webpack_require__(10);
+const fs = __webpack_require__(297);
+const Path = __webpack_require__(298);
 class Generator {
     getFile() {
         const path = vscode.workspace.getConfiguration(Config_1.default.extensionName).get(Config_1.I18N_PATHS_KEY);
@@ -354,19 +203,180 @@ exports.generatorI18nCommandHandler = generatorI18nCommandHandler;
 
 
 /***/ }),
-/* 9 */
+
+/***/ 1:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__webpack_require__(2), exports);
+
+
+/***/ }),
+
+/***/ 2:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.manualInitCommandHandler = void 0;
+const vscode = __webpack_require__(3);
+const Config_1 = __webpack_require__(4);
+const meta_1 = __webpack_require__(5);
+class InitPath {
+    manualInit() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const okText = "立即配置";
+            const result = yield vscode.window.showInformationMessage(`您的I18N配置文件放在那里？`, okText);
+            if (result !== okText) {
+                return;
+            }
+            const filePath = yield this.pickFile();
+            if (!filePath) {
+                vscode.window.showErrorMessage("文件路径地址有误");
+            }
+            else {
+                Config_1.default.updateI18nPaths(filePath);
+                this.success();
+            }
+        });
+    }
+    pickFile() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let file = yield vscode.window.showOpenDialog();
+            if (file && Array.isArray(file)) {
+                return file && file[0].path;
+            }
+            return null;
+        });
+    }
+    success() {
+        vscode.window.showInformationMessage("配置成功");
+    }
+}
+const initPath = new InitPath();
+const manualInitCommandHandler = () => {
+    return vscode.commands.registerCommand(meta_1.default.COMMANDS.manualInitPath, () => {
+        initPath.manualInit();
+    });
+};
+exports.manualInitCommandHandler = manualInitCommandHandler;
+
+
+/***/ }),
+
+/***/ 4:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.I18N_PATHS_KEY = void 0;
+const vscode = __webpack_require__(3);
+exports.I18N_PATHS_KEY = 'i18nPaths';
+class Config {
+    static get extensionName() {
+        return this.extName;
+    }
+    static setConfig(key, value, isGlobal = false) {
+        return vscode.workspace.getConfiguration(this.extensionName).update(key, value, isGlobal);
+    }
+    static getConfig(key) {
+        return vscode.workspace.getConfiguration(this.extensionName).get(key);
+    }
+    static get i18nPaths() {
+        // const rootPath = vscode.workspace.rootPath
+        const path = this.getConfig(exports.I18N_PATHS_KEY);
+        return path;
+        // const relativePaths = paths ? paths.split(',') : []
+        // return relativePaths.map((pathItem: string) =>
+        //   path.resolve(rootPath, pathItem)
+        // )
+    }
+    static updateI18nPaths(path) {
+        console.log(path);
+        this.setConfig(exports.I18N_PATHS_KEY, path);
+    }
+}
+exports.default = Config;
+
+
+/***/ }),
+
+/***/ 295:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.default = {
+    annotationConfig: {
+        content: '// (need I18N)',
+        xmlContent: '{/* (need I18N) */}'
+    }
+};
+
+
+/***/ }),
+
+/***/ 5:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.default = {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    COMMANDS: {
+        manualInitPath: "i18n-plugin.manualInitPath",
+        insertAnnotation: "i18n-plugin.insertAnnotation",
+        insertXMLAnnotation: "i18n-plugin.insertXMLAnnotation",
+        analyse: "i18n-plugin.analyse",
+        generator: "i18n-plugin.generator"
+    }
+};
+
+
+/***/ }),
+
+/***/ 297:
 /***/ ((module) => {
 
 module.exports = require("fs");;
 
 /***/ }),
-/* 10 */
+
+/***/ 298:
 /***/ ((module) => {
 
 module.exports = require("path");;
 
+/***/ }),
+
+/***/ 3:
+/***/ ((module) => {
+
+module.exports = require("vscode");;
+
 /***/ })
-/******/ 	]);
+
+/******/ 	});
 /************************************************************************/
 /******/ 	// The module cache
 /******/ 	var __webpack_module_cache__ = {};
@@ -402,7 +412,7 @@ exports.deactivate = exports.activate = void 0;
 const commands_1 = __webpack_require__(1);
 const Config_1 = __webpack_require__(4);
 const annotation_1 = __webpack_require__(6);
-const generator_1 = __webpack_require__(8);
+const generator_1 = __webpack_require__(296);
 Config_1.default.extName = 'i18n-plugin';
 function activate(context) {
     // 激活插件成功

@@ -1,4 +1,6 @@
 import * as vscode from 'vscode';
+import { parse } from '@babel/parser';
+import traverse from '@babel/traverse';
 import meta from '../utils/meta';
 import config from '../utils/config';
 
